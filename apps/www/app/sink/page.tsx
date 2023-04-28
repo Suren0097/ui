@@ -109,7 +109,7 @@ export default function KitchenSinkPage() {
               </div>
             </ComponentWrapper>
             <ComponentWrapper>
-              <CalendarDatePicker />
+              <CalendarDatePicker allowTyping />
             </ComponentWrapper>
             <ComponentWrapper>
               <AccordionDemo />
