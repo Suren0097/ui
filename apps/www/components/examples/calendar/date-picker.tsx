@@ -26,19 +26,29 @@ export function CalendarDatePicker({ allowTyping }: IProps) {
     let values = value.split('/').map(function (v) {
       return v.replace(/\D/g, '')
     });
+    if (values[0]) values[0] = checkValue(values[0], 12);
     if (values[1]) values[1] = checkValue(values[1], 31);
-    let output = values.map(function (v, i) {
+    let output = values.map(function (v: any, i) {
       const d = (new Date().getFullYear() % 100);
-      return i == 0 && v.length == 1 ? v + ' / ' :
-        i == 1 && v.length == 2 ? v + ' / ' :
-          i == 2 && v.length == 2 && Number(v) > d + 5 ? 19 + v :
-            i == 2 && v.length == 2 && Number(v) < d + 5 ? 20 + v :
-              i == 2 && v.length == 2 && Number(v) == d ? 20 + v : v;
+      if (i == 0 && v.length == 2) {
+        return v + ' / '
+      } else if (i == 1 && v.length == 2) {
+        return v + ' / '
+      } else if (i == 2 && v.length == 2 && Number(v) > d + 5) {
+        return 19 + v
+      } else if (i == 2 && v.length == 2 && Number(v) < d + 5 && v !== '20') {
+        return 20 + v
+      } else if (i == 2 && v.length == 4 && Number(v?.slice(2, 4)) > d + 5) {
+        return new Date().getFullYear() + 5
+      } else {
+        return v
+      }
     });
-    if (output[2]?.length === 3) {
+
+    if (output[2]?.length === 3 && output[2]?.slice(0, 2) !== '20') {
       value = output.join('').substring(0, 10);
     } else {
-      value = output.join('').substring(0, 13);
+      value = output.join('').substring(0, 14);
     }
     setInputValue(value);
     if (value.length > 9) {
@@ -71,6 +81,12 @@ export function CalendarDatePicker({ allowTyping }: IProps) {
     return [month, day, year].join('/');
   }
 
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    const element = document.getElementById('day-picker-input');
+    if (event.key === " ") {
+      element?.click();
+    }
+  };
 
   return (
     <Popover>
@@ -89,6 +105,7 @@ export function CalendarDatePicker({ allowTyping }: IProps) {
           <div style={{ position: 'relative' }}>
             <Input
               type="text"
+              id="day-picker-input"
               placeholder="MM/DD/YYYY"
               className={cn(
                 " w-[280px] justify-start text-left font-normal",
@@ -96,6 +113,7 @@ export function CalendarDatePicker({ allowTyping }: IProps) {
               style={{ wordSpacing: "-3px" }}
               value={inputValue}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
             />
             <CalendarIcon
               className="mr-2 h-4 w-4"
@@ -108,6 +126,7 @@ export function CalendarDatePicker({ allowTyping }: IProps) {
         <Calendar
           mode="single"
           selected={date}
+          showOutsideDays={true}
           today={date}
           onSelect={(event: any) => {
             const d = formatDate(event);
