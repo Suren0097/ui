@@ -61,7 +61,7 @@ export function CalendarDatePicker({ allowTyping }: IProps) {
 
   function checkValue(str: string, max: number) {
     if (str.charAt(0) !== '0' || str == '00') {
-      var num = parseInt(str);
+      let num = parseInt(str);
       if (isNaN(num) || num <= 0 || num > max) num = 1;
       str = num > parseInt(max.toString().charAt(0))
         && num.toString().length == 1 ? '0' + num : num.toString();
@@ -102,15 +102,15 @@ export function CalendarDatePicker({ allowTyping }: IProps) {
             <CalendarIcon className="mr-2 h-4 w-4" />
             {date ? format(date, "PPP") : <span>Pick a date</span>}
           </Button> :
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative' }} >
             <Input
               type="text"
               id="day-picker-input"
               placeholder="MM/DD/YYYY"
               className={cn(
-                " w-[280px] justify-start text-left font-normal",
+                " w-[180px] justify-start text-left font-normal ",
               )}
-              style={{ wordSpacing: "-3px" }}
+              style={{ wordSpacing: "-3px", }}
               value={inputValue}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
